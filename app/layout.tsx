@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Lacquer, Barrio, Schoolbell, Bungee_Spice, Luckiest_Guy, DynaPuff } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Navigation from "@/components/Navigation";
 
@@ -39,6 +40,11 @@ const dynaPuff = DynaPuff({
   variable: "--font-dyna-puff",
 });
 
+const bouncy = localFont({
+  src: "./fonts/Bouncy-PERSONAL_USE_ONLY.otf",
+  variable: "--font-bouncy",
+});
+
 export const metadata: Metadata = {
   title: "Jeet Rocks - Portfolio & Blog",
   description: "Personal website showcasing projects, achievements, experiences, and blog posts",
@@ -50,7 +56,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${lacquer.variable} ${barrio.variable} ${schoolbell.variable} ${bungeeSpice.variable} ${luckiestGuy.variable} ${dynaPuff.variable}`}>
+    <html lang="en" className={`${lacquer.variable} ${barrio.variable} ${schoolbell.variable} ${bungeeSpice.variable} ${luckiestGuy.variable} ${dynaPuff.variable} ${bouncy.variable}`}>
       <body className="antialiased">
         <Navigation />
         <main className="min-h-screen">{children}</main>

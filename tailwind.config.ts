@@ -24,6 +24,7 @@ const config: Config = {
         bungeeSpice: ["var(--font-bungee-spice)"],
         luckiestGuy: ["var(--font-luckiest-guy)"],
         dynaPuff: ["var(--font-dyna-puff)"],
+        bouncy: ["var(--font-bouncy)"],
       },
     },
   },

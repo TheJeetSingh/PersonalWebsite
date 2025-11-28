@@ -64,7 +64,7 @@ export default function Projects() {
         {/* Comic Setting Box */}
         <div className="mb-8">
           <div className="comic-setting-box">
-            <p className="font-sans text-black font-bold uppercase tracking-wider text-sm sm:text-base">
+            <p className="font-bouncy text-black font-bold uppercase tracking-wider text-sm sm:text-base">
               On a website far far away...
             </p>
           </div>
