@@ -1,0 +1,179 @@
+/* Comic Book Night Sky Gradient */
+.comic-sky {
+    background: linear-gradient(to bottom, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    position: fixed;
+    /* Ensure it stays fixed */
+    inset: 0;
+    z-index: 0;
+    /* Place behind content but above body background */
+}
+
+/* Halftone Pattern Overlay */
+.halftone-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(#ffffff 1px, transparent 1px);
+    background-size: 20px 20px;
+    opacity: 0.03;
+    /* Very subtle */
+    pointer-events: none;
+}
+
+/* Twinkling Stars */
+@keyframes twinkle {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+.star-twinkle {
+    animation: twinkle var(--duration, 3s) infinite ease-in-out;
+}
+
+/* Comic Star (4-pointed flare) */
+.comic-star {
+    position: absolute;
+    background: white;
+    width: var(--size, 4px);
+    height: var(--size, 4px);
+    border-radius: 50%;
+    box-shadow: 0 0 2px white;
+    /* Crisp glow */
+    animation: twinkle var(--duration, 4s) infinite ease-in-out;
+}
+
+.comic-star::before,
+.comic-star::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: white;
+    border-radius: 1px;
+    /* Sharper edges */
+    transform: translate(-50%, -50%);
+}
+
+.comic-star::before {
+    width: 25%;
+    height: 250%;
+}
+
+.comic-star::after {
+    width: 250%;
+    height: 25%;
+}
+
+/* Comic Moon - Cooler & More Detailed */
+.comic-moon {
+    position: absolute;
+    top: 25%;
+    /* Moved down from 10% */
+    right: 10%;
+    width: 100px;
+    height: 100px;
+    background: radial-gradient(circle at 30% 30%, #fffbe8, #f0e68c);
+    border-radius: 50%;
+    box-shadow:
+        0 0 20px rgba(255, 250, 205, 0.3),
+        /* Glow */
+        inset -10px -10px 20px rgba(0, 0, 0, 0.1);
+    /* Inner shadow for depth */
+    border: 3px solid #1a1a1a;
+    /* Bold comic outline */
+    overflow: hidden;
+}
+
+/* Moon Craters */
+.comic-moon::before,
+.comic-moon::after {
+    content: "";
+    position: absolute;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+}
+
+.comic-moon::before {
+    top: 20%;
+    left: 25%;
+    width: 15px;
+    height: 15px;
+    box-shadow: 25px 10px 0 -2px rgba(0, 0, 0, 0.05);
+}
+
+.comic-moon::after {
+    bottom: 25%;
+    right: 30%;
+    width: 25px;
+    height: 25px;
+}
+
+/* Simple Cloud Shapes */
+.comic-cloud {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50px;
+}
+
+/* Shooting Stars - Comic Speed Lines */
+.shooting-star {
+    position: absolute;
+    height: 3px;
+    background: white;
+    /* Solid white for comic look */
+    border-radius: 2px;
+    opacity: 0;
+    animation:
+        tail 2000ms ease-in-out,
+        shooting 2000ms ease-in-out;
+    z-index: 1;
+}
+
+/* Speed lines trailing */
+.shooting-star::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 40px;
+    background: linear-gradient(to left, white, transparent);
+    transform: translateX(100%);
+}
+
+@keyframes tail {
+    0% {
+        width: 0;
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 1;
+    }
+
+    30% {
+        width: 150px;
+    }
+
+    /* Longer streaks */
+    100% {
+        width: 0;
+        opacity: 0;
+    }
+}
+
+@keyframes shooting {
+    0% {
+        transform: translateX(0) translateY(0) rotateZ(45deg);
+    }
+
+    100% {
+        transform: translateX(500px) translateY(500px) rotateZ(45deg);
+    }
+}
