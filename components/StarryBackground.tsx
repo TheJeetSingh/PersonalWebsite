@@ -4,11 +4,16 @@ import React, { useMemo, useState, useEffect } from "react";
 import "./StarryBackground.css";
 
 const StarryBackground = () => {
-    const smallStars = useMemo(() => generateStars(300), []);
-    const mediumStars = useMemo(() => generateStars(100), []);
-    const largeStars = useMemo(() => generateStars(50), []);
+    const [smallStars, setSmallStars] = useState("");
+    const [mediumStars, setMediumStars] = useState("");
+    const [largeStars, setLargeStars] = useState("");
+    const [comicStars, setComicStars] = useState<any[]>([]);
 
-    const comicStars = useMemo(() => {
+    useEffect(() => {
+        setSmallStars(generateStars(300));
+        setMediumStars(generateStars(100));
+        setLargeStars(generateStars(50));
+
         const stars = [];
         for (let i = 0; i < 15; i++) {
             stars.push({
@@ -18,7 +23,7 @@ const StarryBackground = () => {
                 duration: Math.random() * 3 + 2 + 's'
             });
         }
-        return stars;
+        setComicStars(stars);
     }, []);
 
     return (

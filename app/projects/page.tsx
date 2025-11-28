@@ -2,66 +2,13 @@ import StarryBackground from "@/components/StarryBackground";
 import "./projects.css";
 
 export default function Projects() {
-  const projects = [
-    {
-      id: 1,
-      title: "Project Example 1",
-      description: "A brief description of your amazing project. This could include technologies used, problems solved, and impact.",
-      type: "Project",
-      tags: ["React", "Next.js", "TypeScript"],
-      link: "#",
-    },
-    {
-      id: 2,
-      title: "Hackathon Winner",
-      description: "Won first place at a hackathon with this innovative solution. Built in 24 hours with a team.",
-      type: "Hackathon",
-      tags: ["Python", "FastAPI", "ML"],
-      link: "#",
-    },
-    {
-      id: 3,
-      title: "Open Source Contribution",
-      description: "Contributed to a popular open source project, adding new features and fixing bugs.",
-      type: "Open Source",
-      tags: ["JavaScript", "Node.js"],
-      link: "#",
-    },
-  ];
-
-  const experiences = [
-    {
-      id: 1,
-      title: "Software Engineer",
-      company: "Company Name",
-      period: "2023 - Present",
-      description: "Working on building scalable web applications and leading technical initiatives.",
-      achievements: [
-        "Led development of key features",
-        "Improved performance by 40%",
-        "Mentored junior developers",
-      ],
-    },
-    {
-      id: 2,
-      title: "Intern",
-      company: "Previous Company",
-      period: "2022 - 2023",
-      description: "Gained experience in full-stack development and agile methodologies.",
-      achievements: [
-        "Built multiple features from scratch",
-        "Collaborated with cross-functional teams",
-      ],
-    },
-  ];
-
   return (
     <div className="min-h-screen relative">
       <StarryBackground />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10">
 
-        {/* Comic Setting Box */}
+        {/* Comic Setting Box 1 */}
         <div className="mb-8">
           <div className="comic-setting-box">
             <p className="font-bouncy text-black font-bold uppercase tracking-wider text-sm sm:text-base">
@@ -70,103 +17,101 @@ export default function Projects() {
           </div>
         </div>
 
-        <div className="text-center mb-16">
-          <h1 className="text-5xl sm:text-6xl font-black text-white mb-4 drop-shadow-[4px_4px_0_#000] stroke-black">
-            Projects & Experiences
-          </h1>
-          <p className="text-xl text-white font-medium max-w-2xl mx-auto drop-shadow-md">
-            A collection of my work, hackathons, and professional journey
-          </p>
+        {/* Comic Setting Box 2 */}
+        <div className="mb-12 flex justify-end">
+          <div className="comic-setting-box rotate-2">
+            <p className="font-bouncy text-black font-bold uppercase tracking-wider text-sm sm:text-base">
+              Jeet set out to make something amazing
+            </p>
+          </div>
         </div>
 
-        {/* Projects Section */}
-        <section className="mb-20">
-          <h2 className="text-3xl font-black text-white mb-8 drop-shadow-[3px_3px_0_#000]">
-            Projects & Hackathons
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {projects.map((project) => (
-              <div
-                key={project.id}
-                className="comic-panel p-6 rounded-xl"
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <span className="comic-badge px-3 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-800 uppercase">
-                    {project.type}
-                  </span>
+        {/* Big Comic Book Style Card */}
+        <div className="w-full max-w-[700px] mx-auto">
+          <div className="comic-panel aspect-[2/3] bg-white rotate-1 hover:rotate-0 transition-transform duration-300 p-4 sm:p-6 flex flex-col">
+
+            {/* Header Panel */}
+            <div className="border-b-4 border-black pb-4 mb-4">
+              <h1 className="text-5xl sm:text-6xl font-luckiestGuy text-black drop-shadow-[3px_3px_0_rgba(0,0,0,0.2)] text-center uppercase tracking-wide">
+                Speech App
+              </h1>
+            </div>
+
+            {/* Main Content Grid */}
+            <div className="flex-1 grid grid-cols-12 gap-4">
+
+              {/* Large Image/Visual Panel (Top Left) */}
+              <div className="col-span-12 sm:col-span-7 border-4 border-black bg-gray-100 relative min-h-[300px] overflow-hidden group">
+                {/* Image */}
+                <div className="absolute inset-0">
+                  <img
+                    src="/SpeechApp.png"
+                    alt="Articulate App Screenshot"
+                    className="w-full h-full object-cover object-top"
+                  />
                 </div>
-                <h3 className="text-xl font-black text-black mb-2 tracking-wide">
-                  {project.title}
-                </h3>
-                <p className="text-gray-800 text-sm mb-4 leading-relaxed font-medium">
-                  {project.description}
-                </p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {project.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="px-2 py-1 text-xs font-bold rounded border-2 border-black bg-gray-100 text-black"
-                    >
-                      {tag}
+                <div className="comic-caption-box absolute top-0 left-0 -rotate-2">
+                  <span className="font-bouncy text-xs font-bold uppercase text-black">The Visuals</span>
+                </div>
+              </div>
+
+              {/* Description Panel (Top Right) */}
+              <div className="col-span-12 sm:col-span-5 flex flex-col gap-4">
+                <div className="border-4 border-black p-4 bg-yellow-100 flex-1 relative">
+                  <p className="font-dynaPuff text-black text-sm leading-relaxed">
+                    "Articulate is a web-based speech practice and coaching app that helps users improve their public speaking through structured recording and AI-assisted feedback."
+                  </p>
+                </div>
+                <div className="border-4 border-black p-4 bg-blue-100 flex-1 relative mt-2">
+                  <div className="comic-caption-box absolute -top-4 -left-2 rotate-2 z-10">
+                    <span className="font-bouncy text-xs font-bold uppercase text-black">The Mission</span>
+                  </div>
+                  <p className="font-dynaPuff text-black text-sm leading-relaxed mt-2">
+                    Speak, record, and get AI analysis on your pacing and clarity. It's a self-guided coaching loop to help you become a more confident speaker!
+                  </p>
+                </div>
+              </div>
+
+              {/* Tech Stack Panel (Middle Strip) */}
+              <div className="col-span-12 border-4 border-black p-4 bg-white relative mt-2">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-red-500 border-2 border-black px-3 py-1 rotate-1 shadow-[2px_2px_0_#000] z-10">
+                  <span className="font-luckiestGuy text-white text-sm uppercase tracking-wide">Powered By</span>
+                </div>
+                <div className="flex flex-wrap justify-center gap-3 mt-4">
+                  {["React", "Node.js", "Vercel", "MongoDB", "Tailwind"].map((tech) => (
+                    <span key={tech} className="font-bouncy text-black text-sm border-2 border-black px-2 py-1 bg-gray-100 shadow-[2px_2px_0_#000]">
+                      {tech}
                     </span>
                   ))}
                 </div>
-                {project.link !== "#" && (
-                  <a
-                    href={project.link}
-                    className="inline-block text-black font-bold hover:text-blue-600 hover:underline decoration-2 underline-offset-2"
-                  >
-                    View Project →
-                  </a>
-                )}
               </div>
-            ))}
-          </div>
-        </section>
 
-        {/* Experiences Section */}
-        <section>
-          <h2 className="text-3xl font-black text-white mb-8 drop-shadow-[3px_3px_0_#000]">
-            Professional Experience
-          </h2>
-          <div className="space-y-8">
-            {experiences.map((exp) => (
-              <div
-                key={exp.id}
-                className="comic-panel p-6 rounded-xl bg-white"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
-                  <div>
-                    <h3 className="text-2xl font-black text-black tracking-wide">
-                      {exp.title}
-                    </h3>
-                    <p className="text-lg font-bold text-gray-700">
-                      {exp.company}
-                    </p>
-                  </div>
-                  <span className="text-sm font-bold text-gray-500 mt-2 sm:mt-0 border-2 border-black px-2 py-1 rounded bg-gray-50">
-                    {exp.period}
-                  </span>
-                </div>
-                <p className="text-gray-800 font-medium mb-4">
-                  {exp.description}
-                </p>
-                <ul className="list-disc list-inside space-y-1">
-                  {exp.achievements.map((achievement, index) => (
-                    <li
-                      key={index}
-                      className="text-gray-700 text-sm font-medium"
-                    >
-                      {achievement}
-                    </li>
-                  ))}
-                </ul>
+              {/* Bottom Action Panel */}
+              <div className="col-span-12 border-4 border-black bg-black p-4 flex items-center justify-center relative overflow-hidden mt-2">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-20"></div>
+                <a
+                  href="https://articulate.ninja"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative z-10 font-luckiestGuy text-white text-3xl hover:scale-110 transition-transform uppercase tracking-widest drop-shadow-[4px_4px_0_#ff0000]"
+                >
+                  Launch Project!
+                </a>
               </div>
-            ))}
+
+            </div>
+
+            {/* Page Number */}
+            <div className="mt-2 text-right">
+              <span className="font-bouncy text-black text-xs border-2 border-black rounded-full px-2 py-1 bg-white">
+                Page 1
+              </span>
+            </div>
+
           </div>
-        </section>
+        </div>
+
       </div>
     </div>
   );
 }
-
