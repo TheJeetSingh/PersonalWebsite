@@ -1,4 +1,5 @@
 import StarryBackground from "@/components/StarryBackground";
+import Image from "next/image";
 import "./projects.css";
 
 export default function Projects() {
@@ -44,13 +45,14 @@ export default function Projects() {
               <div className="col-span-12 sm:col-span-7 border-4 border-black bg-gray-100 relative min-h-[300px] overflow-hidden group">
                 {/* Image */}
                 <div className="absolute inset-0">
-                  <img
+                  <Image
                     src="/SpeechApp.png"
                     alt="Articulate App Screenshot"
-                    className="w-full h-full object-cover object-top"
+                    fill
+                    className="object-cover object-top"
                   />
                 </div>
-                <div className="comic-caption-box absolute top-0 left-0 -rotate-2">
+                <div className="comic-caption-box absolute top-0 left-0 -rotate-2 z-10">
                   <span className="font-bouncy text-xs font-bold uppercase text-black">The Visuals</span>
                 </div>
               </div>
@@ -59,7 +61,7 @@ export default function Projects() {
               <div className="col-span-12 sm:col-span-5 flex flex-col gap-4">
                 <div className="border-4 border-black p-4 bg-yellow-100 flex-1 relative">
                   <p className="font-dynaPuff text-black text-sm leading-relaxed">
-                    "Articulate is a web-based speech practice and coaching app that helps users improve their public speaking through structured recording and AI-assisted feedback."
+                    &quot;Articulate is a web-based speech practice and coaching app that helps users improve their public speaking through structured recording and AI-assisted feedback.&quot;
                   </p>
                 </div>
                 <div className="border-4 border-black p-4 bg-blue-100 flex-1 relative mt-2">
@@ -67,7 +69,7 @@ export default function Projects() {
                     <span className="font-bouncy text-xs font-bold uppercase text-black">The Mission</span>
                   </div>
                   <p className="font-dynaPuff text-black text-sm leading-relaxed mt-2">
-                    Speak, record, and get AI analysis on your pacing and clarity. It's a self-guided coaching loop to help you become a more confident speaker!
+                    Speak, record, and get AI analysis on your pacing and clarity. It&apos;s a self-guided coaching loop to help you become a more confident speaker!
                   </p>
                 </div>
               </div>
