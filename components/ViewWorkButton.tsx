@@ -1,17 +1,15 @@
-"use client";
-
-import React from "react";
-import Link from "next/link";
-import "./ViewWorkButton.css";
+import React from 'react';
+import Link from 'next/link';
+import './ViewWorkButton.css';
 
 interface ViewWorkButtonProps {
     href: string;
     children: React.ReactNode;
 }
 
-export default function ViewWorkButton({ href, children }: ViewWorkButtonProps) {
+const ViewWorkButton: React.FC<ViewWorkButtonProps> = ({ href, children }) => {
     return (
-        <Link href={href} className="no-underline inline-block">
+        <Link href={href}>
             <button className="btn-17">
                 <span className="text-container">
                     <span className="text">{children}</span>
@@ -19,4 +17,6 @@ export default function ViewWorkButton({ href, children }: ViewWorkButtonProps) 
             </button>
         </Link>
     );
-}
+};
+
+export default ViewWorkButton;
