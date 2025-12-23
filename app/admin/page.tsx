@@ -57,32 +57,6 @@ export default function AdminDashboard() {
     fetchPosts();
   }, []);
 
-  // Autosave effect
-  useEffect(() => {
-    if (!showEditor) return;
-
-    // Mark content as changed
-    contentChangedRef.current = true;
-
-    // Clear existing timer
-    if (autoSaveTimerRef.current) {
-      clearTimeout(autoSaveTimerRef.current);
-    }
-
-    // Set new timer for 30 seconds
-    autoSaveTimerRef.current = setTimeout(() => {
-      if (contentChangedRef.current && title.trim() && content.trim()) {
-        handleAutoSave();
-      }
-    }, 30000);
-
-    return () => {
-      if (autoSaveTimerRef.current) {
-        clearTimeout(autoSaveTimerRef.current);
-      }
-    };
-  }, [title, excerpt, content, category, readTime, showEditor]);
-
   const handleAutoSave = useCallback(async () => {
     if (!title.trim() || !content.trim()) return;
 
@@ -129,6 +103,32 @@ export default function AdminDashboard() {
       setAutoSaveStatus("idle");
     }
   }, [title, excerpt, content, category, readTime, editingPost]);
+
+  // Autosave effect
+  useEffect(() => {
+    if (!showEditor) return;
+
+    // Mark content as changed
+    contentChangedRef.current = true;
+
+    // Clear existing timer
+    if (autoSaveTimerRef.current) {
+      clearTimeout(autoSaveTimerRef.current);
+    }
+
+    // Set new timer for 30 seconds
+    autoSaveTimerRef.current = setTimeout(() => {
+      if (contentChangedRef.current && title.trim() && content.trim()) {
+        handleAutoSave();
+      }
+    }, 30000);
+
+    return () => {
+      if (autoSaveTimerRef.current) {
+        clearTimeout(autoSaveTimerRef.current);
+      }
+    };
+  }, [title, excerpt, content, category, readTime, showEditor, handleAutoSave]);
 
   const fetchPosts = async () => {
     try {
