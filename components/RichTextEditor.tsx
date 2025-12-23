@@ -7,6 +7,7 @@ import LinkExtension from "@tiptap/extension-link";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
 import { FontFamily } from "@tiptap/extension-font-family";
+import Image from "@tiptap/extension-image";
 import { useEffect, useState, useCallback, useRef } from "react";
 
 interface RichTextEditorProps {
@@ -136,6 +137,13 @@ export default function RichTextEditor({
       TextStyle,
       Color,
       FontFamily,
+      Image.configure({
+        inline: true,
+        allowBase64: true,
+        HTMLAttributes: {
+          class: "max-w-full h-auto border-4 border-black shadow-[4px_4px_0_#000] my-4",
+        },
+      }),
     ],
     content: content || "",
     onUpdate: ({ editor }) => {
@@ -476,6 +484,34 @@ export default function RichTextEditor({
           disabled={!editor.isActive("link")}
         >
           ✂️
+        </ToolbarButton>
+
+        <div className="w-px bg-black mx-1" />
+
+        {/* Image Upload */}
+        <ToolbarButton
+          onMouseDown={(e) => {
+            e.preventDefault();
+            const input = document.createElement("input");
+            input.type = "file";
+            input.accept = "image/*";
+            input.onchange = (event) => {
+              const file = (event.target as HTMLInputElement).files?.[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                  const base64 = e.target?.result as string;
+                  editor.chain().focus().setImage({ src: base64 }).run();
+                };
+                reader.readAsDataURL(file);
+              }
+            };
+            input.click();
+          }}
+          active={false}
+          title="Insert Image"
+        >
+          🖼️
         </ToolbarButton>
 
         <div className="w-px bg-black mx-1" />

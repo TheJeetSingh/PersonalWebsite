@@ -1,5 +1,13 @@
 import { kv } from "@vercel/kv";
 
+export interface Attachment {
+  id: string;
+  name: string;
+  url: string;
+  size: number;
+  type: string;
+}
+
 export interface BlogPost {
   id: string;
   slug: string;
@@ -9,6 +17,7 @@ export interface BlogPost {
   category: string;
   readTime: string;
   published: boolean;
+  attachments?: Attachment[];
   createdAt: string;
   updatedAt: string;
 }
@@ -61,6 +70,7 @@ export async function createPost(data: {
   category: string;
   readTime: string;
   published?: boolean;
+  attachments?: Attachment[];
 }): Promise<BlogPost> {
   const posts = await getAllPosts();
   
@@ -74,6 +84,7 @@ export async function createPost(data: {
     category: data.category,
     readTime: data.readTime,
     published: data.published ?? true,
+    attachments: data.attachments || [],
     createdAt: now,
     updatedAt: now,
   };
@@ -101,6 +112,7 @@ export async function updatePost(
     category: string;
     readTime: string;
     published: boolean;
+    attachments: Attachment[];
   }>
 ): Promise<BlogPost | null> {
   const posts = await getAllPosts();

@@ -101,6 +101,46 @@ export default async function BlogPost({
             className="blog-content"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
+
+          {/* Attachments Section */}
+          {post.attachments && post.attachments.length > 0 && (
+            <div className="mt-12 pt-8 border-t-4 border-black">
+              <h2 className="text-2xl font-luckiestGuy text-black uppercase mb-4">
+                Attachments
+              </h2>
+              <div className="space-y-3">
+                {post.attachments.map((attachment) => (
+                  <div
+                    key={attachment.id}
+                    className="flex items-center gap-3 p-4 bg-gray-50 border-4 border-black hover:bg-gray-100 transition-colors"
+                  >
+                    <span className="text-2xl">
+                      {attachment.type.startsWith("image/") ? "🖼️" : "📎"}
+                    </span>
+                    <div className="flex-1">
+                      <a
+                        href={attachment.url}
+                        download={attachment.name}
+                        className="font-dynaPuff text-black hover:underline font-bold"
+                      >
+                        {attachment.name}
+                      </a>
+                      <p className="font-dynaPuff text-sm text-gray-600">
+                        {(attachment.size / 1024).toFixed(1)} KB
+                      </p>
+                    </div>
+                    <a
+                      href={attachment.url}
+                      download={attachment.name}
+                      className="px-4 py-2 bg-blue-200 hover:bg-blue-300 font-bouncy font-bold text-black text-sm border-2 border-black shadow-[2px_2px_0_#000]"
+                    >
+                      Download
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </article>
       </div>
     </div>

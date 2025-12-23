@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import StarryBackground from "@/components/StarryBackground";
+import type { Attachment } from "@/lib/blog";
 import "./admin.css";
 
 // Dynamically import the rich text editor (it uses browser APIs)
@@ -25,6 +26,7 @@ interface BlogPost {
   category: string;
   readTime: string;
   published: boolean;
+  attachments?: Attachment[];
   createdAt: string;
   updatedAt: string;
 }
@@ -44,6 +46,7 @@ export default function AdminDashboard() {
   const [category, setCategory] = useState("General");
   const [readTime, setReadTime] = useState("5 min read");
   const [published, setPublished] = useState(true);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
 
   // New features
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -71,6 +74,7 @@ export default function AdminDashboard() {
         readTime,
         // Preserve the current published state - don't change it during autosave
         published: editingPost ? editingPost.published : published,
+        attachments: attachments.length > 0 ? attachments : undefined,
       };
 
       let res: Response;
@@ -158,6 +162,7 @@ export default function AdminDashboard() {
     setCategory("General");
     setReadTime("5 min read");
     setPublished(true);
+    setAttachments([]);
     setEditingPost(null);
     setShowPreview(false);
     setIsFullscreen(false);
@@ -178,6 +183,7 @@ export default function AdminDashboard() {
     setCategory(post.category);
     setReadTime(post.readTime);
     setPublished(post.published);
+    setAttachments(post.attachments || []);
     setShowEditor(true);
   };
 
@@ -197,6 +203,7 @@ export default function AdminDashboard() {
         category,
         readTime,
         published,
+        attachments: attachments.length > 0 ? attachments : undefined,
       };
 
       let res: Response;
@@ -526,6 +533,79 @@ export default function AdminDashboard() {
                       onChange={setContent}
                       placeholder="Start writing your epic blog post..."
                     />
+                  </div>
+
+                  {/* Attachments */}
+                  <div>
+                    <label className="block font-dynaPuff font-bold text-black text-lg mb-2">
+                      Attachments (will appear at the end of the post)
+                    </label>
+                    <div className="border-4 border-black bg-gray-50 p-4">
+                      <input
+                        type="file"
+                        id="attachment-upload"
+                        multiple
+                        className="hidden"
+                        onChange={(e) => {
+                          const files = Array.from(e.target.files || []);
+                          files.forEach((file) => {
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              const base64 = event.target?.result as string;
+                              const newAttachment: Attachment = {
+                                id: Date.now().toString(36) + Math.random().toString(36).substring(2),
+                                name: file.name,
+                                url: base64,
+                                size: file.size,
+                                type: file.type,
+                              };
+                              setAttachments((prev) => [...prev, newAttachment]);
+                            };
+                            reader.readAsDataURL(file);
+                          });
+                          // Reset input
+                          e.target.value = "";
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => document.getElementById("attachment-upload")?.click()}
+                        className="px-4 py-2 bg-blue-200 hover:bg-blue-300 font-bouncy font-bold text-black text-sm border-2 border-black shadow-[2px_2px_0_#000] mb-3"
+                      >
+                        + Add Attachment
+                      </button>
+                      {attachments.length > 0 && (
+                        <div className="space-y-2 mt-3">
+                          {attachments.map((attachment) => (
+                            <div
+                              key={attachment.id}
+                              className="flex items-center justify-between p-2 bg-white border-2 border-black"
+                            >
+                              <div className="flex items-center gap-2">
+                                <span className="text-lg">
+                                  {attachment.type.startsWith("image/") ? "🖼️" : "📎"}
+                                </span>
+                                <span className="font-dynaPuff text-sm">{attachment.name}</span>
+                                <span className="font-dynaPuff text-xs text-gray-500">
+                                  ({(attachment.size / 1024).toFixed(1)} KB)
+                                </span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setAttachments((prev) =>
+                                    prev.filter((a) => a.id !== attachment.id)
+                                  )
+                                }
+                                className="px-2 py-1 bg-red-200 hover:bg-red-300 font-bouncy text-xs border border-black"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {/* Publish Toggle */}

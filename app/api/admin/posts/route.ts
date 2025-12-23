@@ -33,6 +33,7 @@ export async function POST(req: NextRequest) {
       category: body.category || "General",
       readTime: body.readTime || "5 min read",
       published: body.published ?? true,
+      attachments: body.attachments || [],
     });
 
     return NextResponse.json(post, { status: 201 });
