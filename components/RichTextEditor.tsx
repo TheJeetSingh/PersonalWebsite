@@ -87,7 +87,7 @@ export default function RichTextEditor({
       const currentContent = editor.getHTML();
       // Only update if content is significantly different (not just whitespace differences)
       if (content !== currentContent && content !== undefined) {
-        editor.commands.setContent(content || "", false);
+        editor.commands.setContent(content || "", { emitUpdate: false });
       }
     }
   }, [content, editor, isInternalUpdate]);
