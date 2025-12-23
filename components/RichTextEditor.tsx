@@ -7,7 +7,7 @@ import LinkExtension from "@tiptap/extension-link";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
 import { FontFamily } from "@tiptap/extension-font-family";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 
 interface RichTextEditorProps {
   content: string;
@@ -15,27 +15,99 @@ interface RichTextEditorProps {
   placeholder?: string;
 }
 
+// Organized color palette
 const COLORS = [
+  // Grays
   { name: "Black", value: "#000000" },
   { name: "Dark Gray", value: "#374151" },
+  { name: "Gray", value: "#6B7280" },
+  { name: "Light Gray", value: "#9CA3AF" },
+  // Reds
+  { name: "Dark Red", value: "#991B1B" },
   { name: "Red", value: "#DC2626" },
+  { name: "Light Red", value: "#F87171" },
+  { name: "Rose", value: "#FB7185" },
+  // Oranges
+  { name: "Dark Orange", value: "#C2410C" },
   { name: "Orange", value: "#EA580C" },
+  { name: "Light Orange", value: "#FB923C" },
+  { name: "Amber", value: "#F59E0B" },
+  // Yellows
+  { name: "Dark Yellow", value: "#A16207" },
   { name: "Yellow", value: "#CA8A04" },
+  { name: "Light Yellow", value: "#FACC15" },
+  { name: "Lime", value: "#84CC16" },
+  // Greens
+  { name: "Dark Green", value: "#166534" },
   { name: "Green", value: "#16A34A" },
+  { name: "Light Green", value: "#4ADE80" },
+  { name: "Emerald", value: "#34D399" },
+  // Blues
+  { name: "Dark Blue", value: "#1E40AF" },
   { name: "Blue", value: "#2563EB" },
+  { name: "Light Blue", value: "#60A5FA" },
+  { name: "Cyan", value: "#22D3EE" },
+  // Purples
+  { name: "Dark Purple", value: "#6B21A8" },
   { name: "Purple", value: "#9333EA" },
+  { name: "Light Purple", value: "#C084FC" },
+  { name: "Violet", value: "#8B5CF6" },
+  // Pinks
+  { name: "Dark Pink", value: "#9D174D" },
   { name: "Pink", value: "#DB2777" },
+  { name: "Light Pink", value: "#F472B6" },
+  { name: "Fuchsia", value: "#E879F9" },
 ];
 
+// Expanded Google Fonts
 const FONTS = [
-  { name: "Default", value: "" },
-  { name: "Lacquer", value: "var(--font-lacquer)" },
-  { name: "Barrio", value: "var(--font-barrio)" },
-  { name: "Schoolbell", value: "var(--font-schoolbell)" },
-  { name: "Bungee Spice", value: "var(--font-bungee-spice)" },
-  { name: "Luckiest Guy", value: "var(--font-luckiest-guy)" },
-  { name: "DynaPuff", value: "var(--font-dyna-puff)" },
-  { name: "Bouncy", value: "var(--font-bouncy)" },
+  // Default
+  { name: "Default", value: "", category: "default" },
+
+  // Serif Fonts
+  { name: "Playfair Display", value: "'Playfair Display', serif", category: "serif" },
+  { name: "Lora", value: "'Lora', serif", category: "serif" },
+  { name: "Merriweather", value: "'Merriweather', serif", category: "serif" },
+  { name: "Crimson Text", value: "'Crimson Text', serif", category: "serif" },
+  { name: "Libre Baskerville", value: "'Libre Baskerville', serif", category: "serif" },
+  { name: "EB Garamond", value: "'EB Garamond', serif", category: "serif" },
+  { name: "Cormorant", value: "'Cormorant', serif", category: "serif" },
+
+  // Sans-Serif Fonts
+  { name: "Inter", value: "'Inter', sans-serif", category: "sans" },
+  { name: "Roboto", value: "'Roboto', sans-serif", category: "sans" },
+  { name: "Open Sans", value: "'Open Sans', sans-serif", category: "sans" },
+  { name: "Montserrat", value: "'Montserrat', sans-serif", category: "sans" },
+  { name: "Poppins", value: "'Poppins', sans-serif", category: "sans" },
+  { name: "Nunito", value: "'Nunito', sans-serif", category: "sans" },
+  { name: "Raleway", value: "'Raleway', sans-serif", category: "sans" },
+  { name: "Work Sans", value: "'Work Sans', sans-serif", category: "sans" },
+  { name: "Outfit", value: "'Outfit', sans-serif", category: "sans" },
+  { name: "Space Grotesk", value: "'Space Grotesk', sans-serif", category: "sans" },
+
+  // Display Fonts
+  { name: "Bebas Neue", value: "'Bebas Neue', sans-serif", category: "display" },
+  { name: "Oswald", value: "'Oswald', sans-serif", category: "display" },
+  { name: "Righteous", value: "'Righteous', sans-serif", category: "display" },
+  { name: "Bungee", value: "'Bungee', sans-serif", category: "display" },
+  { name: "Luckiest Guy", value: "'Luckiest Guy', cursive", category: "display" },
+  { name: "Bangers", value: "'Bangers', cursive", category: "display" },
+  { name: "Fredoka One", value: "'Fredoka One', cursive", category: "display" },
+
+  // Handwriting Fonts
+  { name: "Dancing Script", value: "'Dancing Script', cursive", category: "handwriting" },
+  { name: "Pacifico", value: "'Pacifico', cursive", category: "handwriting" },
+  { name: "Caveat", value: "'Caveat', cursive", category: "handwriting" },
+  { name: "Satisfy", value: "'Satisfy', cursive", category: "handwriting" },
+  { name: "Great Vibes", value: "'Great Vibes', cursive", category: "handwriting" },
+  { name: "Kalam", value: "'Kalam', cursive", category: "handwriting" },
+  { name: "Patrick Hand", value: "'Patrick Hand', cursive", category: "handwriting" },
+
+  // Monospace Fonts
+  { name: "Fira Code", value: "'Fira Code', monospace", category: "mono" },
+  { name: "JetBrains Mono", value: "'JetBrains Mono', monospace", category: "mono" },
+  { name: "Source Code Pro", value: "'Source Code Pro', monospace", category: "mono" },
+  { name: "IBM Plex Mono", value: "'IBM Plex Mono', monospace", category: "mono" },
 ];
 
 export default function RichTextEditor({
@@ -46,6 +118,7 @@ export default function RichTextEditor({
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [showFontPicker, setShowFontPicker] = useState(false);
   const [isInternalUpdate, setIsInternalUpdate] = useState(false);
+  const [, forceUpdate] = useState(0); // Force re-render for toolbar state
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -72,6 +145,10 @@ export default function RichTextEditor({
       // Reset flag after a tick
       setTimeout(() => setIsInternalUpdate(false), 0);
     },
+    // Force toolbar to update instantly on any transaction (including bold toggle)
+    onTransaction: () => {
+      forceUpdate((n) => n + 1);
+    },
     editorProps: {
       attributes: {
         class:
@@ -92,14 +169,28 @@ export default function RichTextEditor({
     }
   }, [content, editor, isInternalUpdate]);
 
+  // Refs for dropdown containers
+  const fontPickerRef = useRef<HTMLDivElement>(null);
+  const colorPickerRef = useRef<HTMLDivElement>(null);
+
   // Close dropdowns when clicking outside
   useEffect(() => {
-    const handleClick = () => {
-      setShowColorPicker(false);
-      setShowFontPicker(false);
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      // Check if click is outside font picker
+      if (fontPickerRef.current && !fontPickerRef.current.contains(target)) {
+        setShowFontPicker(false);
+      }
+
+      // Check if click is outside color picker
+      if (colorPickerRef.current && !colorPickerRef.current.contains(target)) {
+        setShowColorPicker(false);
+      }
     };
-    document.addEventListener("click", handleClick);
-    return () => document.removeEventListener("click", handleClick);
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const runCommand = useCallback(
@@ -138,6 +229,22 @@ export default function RichTextEditor({
 
   const currentColor = editor.getAttributes("textStyle").color || "#000000";
   const currentFont = editor.getAttributes("textStyle").fontFamily || "";
+
+  // Group fonts by category
+  const fontsByCategory = FONTS.reduce((acc, font) => {
+    if (!acc[font.category]) acc[font.category] = [];
+    acc[font.category].push(font);
+    return acc;
+  }, {} as Record<string, typeof FONTS>);
+
+  const categoryLabels: Record<string, string> = {
+    default: "Default",
+    serif: "Serif",
+    sans: "Sans-Serif",
+    display: "Display",
+    handwriting: "Handwriting",
+    mono: "Monospace",
+  };
 
   return (
     <div className="border-4 border-black bg-white">
@@ -179,86 +286,106 @@ export default function RichTextEditor({
         <div className="w-px bg-black mx-1" />
 
         {/* Font Picker */}
-        <div className="relative" onClick={(e) => e.stopPropagation()}>
+        <div ref={fontPickerRef} className="relative">
           <button
             type="button"
-            onMouseDown={(e) => {
+            onClick={(e) => {
               e.preventDefault();
+              e.stopPropagation();
               setShowFontPicker(!showFontPicker);
               setShowColorPicker(false);
             }}
             title="Font Family"
-            className="px-2 py-1 text-sm font-bold border-2 border-black bg-white hover:bg-gray-100 flex items-center gap-1 min-w-[80px]"
+            className={`px-2 py-1 text-sm font-bold border-2 border-black bg-white hover:bg-gray-100 flex items-center gap-1 min-w-[100px] ${showFontPicker ? 'bg-gray-200' : ''}`}
           >
             <span className="truncate">
               {FONTS.find((f) => f.value === currentFont)?.name || "Font"}
             </span>
-            <span>▼</span>
+            <span>{showFontPicker ? '▲' : '▼'}</span>
           </button>
           {showFontPicker && (
-            <div className="absolute top-full left-0 mt-1 bg-white border-4 border-black shadow-[4px_4px_0_#000] z-50 min-w-[150px]">
-              {FONTS.map((font) => (
-                <button
-                  key={font.name}
-                  type="button"
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    setFont(font.value);
-                  }}
-                  className={`w-full px-3 py-2 text-left text-sm hover:bg-gray-100 border-b border-gray-200 last:border-b-0 ${
-                    currentFont === font.value ? "bg-gray-200" : ""
-                  }`}
-                  style={{ fontFamily: font.value || "inherit" }}
-                >
-                  {font.name}
-                </button>
+            <div
+              className="absolute top-full left-0 mt-1 bg-white border-4 border-black shadow-[4px_4px_0_#000] z-50 min-w-[200px] max-h-[400px] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+            >
+              {Object.entries(fontsByCategory).map(([category, fonts]) => (
+                <div key={category}>
+                  <div className="px-3 py-1 bg-gray-100 font-bold text-xs uppercase text-gray-600 border-b border-gray-300 sticky top-0">
+                    {categoryLabels[category] || category}
+                  </div>
+                  {fonts.map((font) => (
+                    <button
+                      key={font.name}
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setFont(font.value);
+                      }}
+                      className={`w-full px-3 py-2 text-left text-sm hover:bg-blue-50 border-b border-gray-100 last:border-b-0 ${currentFont === font.value ? "bg-blue-100 font-bold" : ""}`}
+                      style={{ fontFamily: font.value || "inherit" }}
+                    >
+                      {font.name}
+                    </button>
+                  ))}
+                </div>
               ))}
             </div>
           )}
         </div>
 
         {/* Color Picker */}
-        <div className="relative" onClick={(e) => e.stopPropagation()}>
+        <div ref={colorPickerRef} className="relative">
           <button
             type="button"
-            onMouseDown={(e) => {
+            onClick={(e) => {
               e.preventDefault();
+              e.stopPropagation();
               setShowColorPicker(!showColorPicker);
               setShowFontPicker(false);
             }}
             title="Text Color"
-            className="px-2 py-1 text-sm font-bold border-2 border-black bg-white hover:bg-gray-100 flex items-center gap-1"
+            className={`px-2 py-1 text-sm font-bold border-2 border-black bg-white hover:bg-gray-100 flex items-center gap-1 ${showColorPicker ? 'bg-gray-200' : ''}`}
           >
             <span
               className="w-4 h-4 border border-black"
               style={{ backgroundColor: currentColor }}
             />
             <span>A</span>
+            <span>{showColorPicker ? '▲' : '▼'}</span>
           </button>
           {showColorPicker && (
-            <div className="absolute top-full left-0 mt-1 bg-white border-4 border-black shadow-[4px_4px_0_#000] p-2 z-50 grid grid-cols-3 gap-1">
-              {COLORS.map((color) => (
-                <button
-                  key={color.value}
-                  type="button"
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    setColor(color.value);
-                  }}
-                  title={color.name}
-                  className="w-8 h-8 border-2 border-black hover:scale-110 transition-transform"
-                  style={{ backgroundColor: color.value }}
-                />
-              ))}
+            <div
+              className="absolute top-full left-0 mt-1 bg-white border-4 border-black shadow-[4px_4px_0_#000] p-4 z-50"
+            >
+              {/* Color grid - 4 columns for clean rows */}
+              <div className="grid grid-cols-4 gap-2 mb-3" style={{ width: '160px' }}>
+                {COLORS.map((color) => (
+                  <button
+                    key={color.value}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setColor(color.value);
+                    }}
+                    title={color.name}
+                    className={`w-8 h-8 border-2 hover:scale-110 transition-transform ${currentColor === color.value ? 'border-blue-500 ring-2 ring-blue-300' : 'border-gray-300'}`}
+                    style={{ backgroundColor: color.value }}
+                  />
+                ))}
+              </div>
               <button
                 type="button"
-                onMouseDown={(e) => {
+                onClick={(e) => {
                   e.preventDefault();
+                  e.stopPropagation();
                   editor.chain().focus().unsetColor().run();
                   setShowColorPicker(false);
                 }}
                 title="Reset to Black"
-                className="col-span-3 px-2 py-1 text-xs font-bold border-2 border-black bg-gray-100 hover:bg-gray-200"
+                className="w-full px-3 py-2 text-sm font-bold border-2 border-black bg-gray-100 hover:bg-gray-200"
               >
                 Reset
               </button>
@@ -416,11 +543,10 @@ function ToolbarButton({
       onMouseDown={onMouseDown}
       disabled={disabled}
       title={title}
-      className={`px-2 py-1 text-sm font-bold border-2 border-black transition-all select-none ${
-        active
-          ? "bg-black text-white shadow-[2px_2px_0_#333]"
-          : "bg-white text-black hover:bg-gray-100"
-      } ${disabled ? "opacity-40 cursor-not-allowed" : "hover:translate-x-[-1px] hover:translate-y-[-1px]"}`}
+      className={`px-2 py-1 text-sm font-bold border-2 border-black transition-all select-none ${active
+        ? "bg-black text-white shadow-[2px_2px_0_#333]"
+        : "bg-white text-black hover:bg-gray-100"
+        } ${disabled ? "opacity-40 cursor-not-allowed" : "hover:translate-x-[-1px] hover:translate-y-[-1px]"}`}
     >
       {children}
     </button>

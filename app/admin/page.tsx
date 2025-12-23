@@ -69,7 +69,8 @@ export default function AdminDashboard() {
         content,
         category,
         readTime,
-        published: false, // Autosave always saves as draft
+        // Preserve the current published state - don't change it during autosave
+        published: editingPost ? editingPost.published : published,
       };
 
       let res: Response;
@@ -102,7 +103,7 @@ export default function AdminDashboard() {
       console.error("Autosave error", err);
       setAutoSaveStatus("idle");
     }
-  }, [title, excerpt, content, category, readTime, editingPost]);
+  }, [title, excerpt, content, category, readTime, editingPost, published]);
 
   // Autosave effect
   useEffect(() => {
@@ -342,8 +343,8 @@ export default function AdminDashboard() {
                       <button
                         onClick={() => togglePublish(post)}
                         className={`px-4 py-2 font-bouncy font-bold text-black text-base border-2 border-black shadow-[2px_2px_0_#000] ${post.published
-                            ? "bg-yellow-200 hover:bg-yellow-300"
-                            : "bg-green-200 hover:bg-green-300"
+                          ? "bg-yellow-200 hover:bg-yellow-300"
+                          : "bg-green-200 hover:bg-green-300"
                           }`}
                       >
                         {post.published ? "Unpublish" : "Publish"}
@@ -377,10 +378,9 @@ export default function AdminDashboard() {
                     {editingPost ? "Edit Post" : "New Post"}
                   </h2>
                   {/* Autosave status */}
-                  <span className={`text-sm font-dynaPuff ${
-                    autoSaveStatus === "saving" ? "text-yellow-600" :
+                  <span className={`text-sm font-dynaPuff ${autoSaveStatus === "saving" ? "text-yellow-600" :
                     autoSaveStatus === "saved" ? "text-green-600" : "text-gray-400"
-                  }`}>
+                    }`}>
                     {autoSaveStatus === "saving" && "⏳ Saving..."}
                     {autoSaveStatus === "saved" && "✓ Saved"}
                     {autoSaveStatus === "idle" && lastAutoSave && `Last saved: ${lastAutoSave.toLocaleTimeString()}`}
@@ -390,18 +390,16 @@ export default function AdminDashboard() {
                   {/* Preview Toggle */}
                   <button
                     onClick={() => setShowPreview(!showPreview)}
-                    className={`px-4 py-2 font-bouncy font-bold text-black text-sm border-2 border-black ${
-                      showPreview ? "bg-purple-300" : "bg-purple-100 hover:bg-purple-200"
-                    }`}
+                    className={`px-4 py-2 font-bouncy font-bold text-black text-sm border-2 border-black ${showPreview ? "bg-purple-300" : "bg-purple-100 hover:bg-purple-200"
+                      }`}
                   >
                     {showPreview ? "✏️ Edit" : "👁️ Preview"}
                   </button>
                   {/* Fullscreen Toggle */}
                   <button
                     onClick={toggleFullscreen}
-                    className={`px-4 py-2 font-bouncy font-bold text-black text-sm border-2 border-black ${
-                      isFullscreen ? "bg-blue-300" : "bg-blue-100 hover:bg-blue-200"
-                    }`}
+                    className={`px-4 py-2 font-bouncy font-bold text-black text-sm border-2 border-black ${isFullscreen ? "bg-blue-300" : "bg-blue-100 hover:bg-blue-200"
+                      }`}
                   >
                     {isFullscreen ? "⊟ Exit" : "⊞ Fullscreen"}
                   </button>

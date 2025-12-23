@@ -10,6 +10,21 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 export const fetchCache = "force-no-store";
 
+// Generate a very subtle random tilt (0.5-1 degree) based on slug
+function getRandomTilt(slug: string): number {
+  // Simple hash function to get consistent random for same slug
+  let hash = 0;
+  for (let i = 0; i < slug.length; i++) {
+    hash = ((hash << 5) - hash) + slug.charCodeAt(i);
+    hash = hash & hash;
+  }
+  // Generate value between 0.5-1 degree
+  const baseTilt = 0.5 + (Math.abs(hash) % 6) * 0.1; // 0.5 to 1.0
+  // Randomly positive or negative
+  const sign = hash % 2 === 0 ? 1 : -1;
+  return baseTilt * sign;
+}
+
 export default async function BlogPost({
   params,
 }: {
@@ -30,11 +45,13 @@ export default async function BlogPost({
     Project: "bg-green-100",
   };
 
+  const tiltDegrees = getRandomTilt(slug);
+
   return (
     <div className="min-h-screen relative">
       <StarryBackground />
 
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10">
         {/* Back Link */}
         <div className="mb-8">
           <Link
@@ -46,7 +63,10 @@ export default async function BlogPost({
         </div>
 
         {/* Post Content */}
-        <article className="comic-panel bg-white p-6 sm:p-8">
+        <article
+          className="comic-panel bg-white p-6 sm:p-10 lg:p-12"
+          style={{ transform: `rotate(${tiltDegrees}deg)` }}
+        >
           {/* Header */}
           <div className="border-b-4 border-black pb-6 mb-6">
             <div className="flex items-center gap-3 mb-4 flex-wrap">
@@ -66,11 +86,11 @@ export default async function BlogPost({
                 {post.readTime}
               </span>
             </div>
-            <h1 className="text-3xl sm:text-4xl font-luckiestGuy text-black uppercase tracking-wide drop-shadow-[3px_3px_0_rgba(0,0,0,0.2)]">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-luckiestGuy text-black uppercase tracking-wide drop-shadow-[3px_3px_0_rgba(0,0,0,0.2)]">
               {post.title}
             </h1>
             {post.excerpt && (
-              <p className="mt-4 font-dynaPuff text-gray-700 text-lg">
+              <p className="mt-4 font-dynaPuff text-gray-700 text-lg lg:text-xl">
                 {post.excerpt}
               </p>
             )}

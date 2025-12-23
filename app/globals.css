@@ -4,20 +4,41 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #000000;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* Force black text everywhere - no dark mode */
 body {
-  color: var(--foreground);
+  color: #000000;
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Ensure all text elements are black */
+* {
+  color: inherit;
+}
+
+p,
+span,
+div,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+label,
+a,
+li,
+td,
+th {
+  color: #000000;
+}
+
+/* Exception for elements that need white text (buttons with dark backgrounds) */
+.text-white {
+  color: #ffffff !important;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
