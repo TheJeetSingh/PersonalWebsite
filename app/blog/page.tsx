@@ -3,7 +3,7 @@ import StarryBackground from "@/components/StarryBackground";
 import { getPublishedPosts } from "@/lib/blog";
 import "./blog.css";
 
-export const revalidate = 60; // Revalidate every 60 seconds
+export const dynamic = "force-dynamic"; // Always fetch fresh data
 
 export default async function Blog() {
   const blogPosts = await getPublishedPosts();

@@ -4,7 +4,7 @@ import StarryBackground from "@/components/StarryBackground";
 import { getPostBySlug, getPublishedPosts } from "@/lib/blog";
 import "../blog.css";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic"; // Always fetch fresh data
 
 export async function generateStaticParams() {
   const posts = await getPublishedPosts();
