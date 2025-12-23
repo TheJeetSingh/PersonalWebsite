@@ -1,91 +1,103 @@
 import Link from "next/link";
+import StarryBackground from "@/components/StarryBackground";
+import { getPublishedPosts } from "@/lib/blog";
+import "./blog.css";
 
-export default function Blog() {
-  const blogPosts = [
-    {
-      id: 1,
-      title: "Getting Started with Next.js 14",
-      excerpt: "A comprehensive guide to building modern web applications with Next.js 14, covering the App Router, Server Components, and more.",
-      date: "2024-01-15",
-      readTime: "5 min read",
-      category: "Tutorial",
-    },
-    {
-      id: 2,
-      title: "Building Scalable React Applications",
-      excerpt: "Best practices and patterns for building large-scale React applications that are maintainable and performant.",
-      date: "2024-01-10",
-      readTime: "8 min read",
-      category: "Development",
-    },
-    {
-      id: 3,
-      title: "My Journey into Machine Learning",
-      excerpt: "Reflections on learning machine learning, the challenges faced, and key insights gained along the way.",
-      date: "2024-01-05",
-      readTime: "6 min read",
-      category: "Personal",
-    },
-  ];
+export const revalidate = 60; // Revalidate every 60 seconds
+
+export default async function Blog() {
+  const blogPosts = await getPublishedPosts();
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            Blog & Documentation
-          </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300">
-            Thoughts, tutorials, and documentation on technology and development
-          </p>
-        </div>
+    <div className="min-h-screen relative">
+      <StarryBackground />
 
-        <div className="space-y-8">
-          {blogPosts.map((post) => (
-            <article
-              key={post.id}
-              className="p-6 rounded-xl bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow"
-            >
-              <div className="flex items-center gap-3 mb-3">
-                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200">
-                  {post.category}
-                </span>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                  {new Date(post.date).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </span>
-                <span className="text-sm text-gray-500 dark:text-gray-400">
-                  {post.readTime}
-                </span>
-              </div>
-              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-3">
-                {post.title}
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300 mb-4">
-                {post.excerpt}
-              </p>
-              <Link
-                href={`/blog/${post.id}`}
-                className="text-blue-600 dark:text-blue-400 hover:underline font-medium inline-flex items-center gap-1"
-              >
-                Read more →
-              </Link>
-            </article>
-          ))}
-        </div>
-
-        {blogPosts.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-600 dark:text-gray-300">
-              No blog posts yet. Check back soon!
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24 relative z-10">
+        {/* Comic Setting Box */}
+        <div className="mb-12 flex justify-end">
+          <div className="comic-setting-box rotate-2">
+            <p className="font-bouncy text-black font-bold uppercase tracking-wider text-sm sm:text-base">
+              Jeet shares his thoughts & adventures
             </p>
+          </div>
+        </div>
+
+        {/* Blog Posts - Comic Book Covers Grid */}
+        {blogPosts.length > 0 ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {blogPosts.map((post, index) => {
+              const rotationClass = index % 2 === 0 ? "rotate-1" : "-rotate-1";
+              const categoryColors: { [key: string]: string } = {
+                Tutorial: "bg-yellow-100",
+                Development: "bg-blue-100",
+                Personal: "bg-pink-100",
+                General: "bg-gray-100",
+                Project: "bg-green-100",
+              };
+
+              return (
+                <Link
+                  key={post.id}
+                  href={`/blog/${post.slug}`}
+                  className="block group"
+                >
+                  <article
+                    className={`comic-cover bg-white ${rotationClass} group-hover:rotate-0 transition-transform duration-300 overflow-hidden`}
+                  >
+                    {/* Image Placeholder Area */}
+                    <div className="comic-cover-image bg-gradient-to-br from-gray-200 via-gray-300 to-gray-400 border-b-4 border-black relative">
+                      {/* Placeholder pattern or icon */}
+                      <div className="absolute inset-0 flex items-center justify-center opacity-30">
+                        <div className="text-8xl">📖</div>
+                      </div>
+                      {/* Category Badge - Top Right */}
+                      <div className="absolute top-2 right-2">
+                        <span className={`comic-badge px-3 py-1 ${categoryColors[post.category] || "bg-gray-100"} font-bouncy text-black text-xs font-bold uppercase`}>
+                          {post.category}
+                        </span>
+                      </div>
+                      {/* Issue Number - Top Left */}
+                      <div className="absolute top-2 left-2">
+                        <span className="comic-badge px-3 py-1 bg-red-500 font-luckiestGuy text-white text-xs font-bold">
+                          #{index + 1}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Title Section - Bottom */}
+                    <div className="p-4 bg-white border-t-4 border-black">
+                      <h2 className="text-xl sm:text-2xl font-luckiestGuy text-black uppercase tracking-wide drop-shadow-[2px_2px_0_rgba(0,0,0,0.2)] text-center leading-tight mb-2">
+                        {post.title}
+                      </h2>
+                      {/* Metadata */}
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-dynaPuff text-black opacity-70">
+                          {new Date(post.createdAt).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </span>
+                        <span className="font-dynaPuff text-black opacity-70">
+                          {post.readTime}
+                        </span>
+                      </div>
+                    </div>
+                  </article>
+                </Link>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="mt-8">
+            <div className="comic-panel bg-white p-8 text-center max-w-md mx-auto">
+              <p className="font-dynaPuff text-black text-xl">
+                No blog posts yet. Once Jeet starts writing, epic stories will appear here.
+              </p>
+            </div>
           </div>
         )}
       </div>
     </div>
   );
 }
-
