@@ -3,7 +3,10 @@ import StarryBackground from "@/components/StarryBackground";
 import { getPublishedPosts } from "@/lib/blog";
 import "./blog.css";
 
-export const dynamic = "force-dynamic"; // Always fetch fresh data
+// Force dynamic rendering with no caching
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 export default async function Blog() {
   const blogPosts = await getPublishedPosts();

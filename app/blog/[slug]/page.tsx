@@ -1,16 +1,14 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import StarryBackground from "@/components/StarryBackground";
-import { getPostBySlug, getPublishedPosts } from "@/lib/blog";
+import { getPostBySlug } from "@/lib/blog";
 import "../blog.css";
 import "./post.css";
 
-export const dynamic = "force-dynamic"; // Always fetch fresh data
-
-export async function generateStaticParams() {
-  const posts = await getPublishedPosts();
-  return posts.map((post) => ({ slug: post.slug }));
-}
+// Force dynamic rendering with no caching
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
 
 export default async function BlogPost({
   params,
