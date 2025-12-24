@@ -130,3 +130,16 @@
   margin: 1.5rem 0;
 }
 
+/* Embed Container Styles */
+.blog-content .embed-container,
+.blog-content div[class*="embed"] {
+  margin: 1.5rem 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.blog-content iframe {
+  max-width: 100%;
+  border-radius: 12px;
+  display: block;
+}

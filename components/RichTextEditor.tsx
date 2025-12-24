@@ -8,6 +8,7 @@ import { TextStyle } from "@tiptap/extension-text-style";
 import { Color } from "@tiptap/extension-color";
 import { FontFamily } from "@tiptap/extension-font-family";
 import Image from "@tiptap/extension-image";
+import Iframe from "./extensions/Iframe";
 import { useEffect, useState, useCallback, useRef } from "react";
 
 interface RichTextEditorProps {
@@ -144,6 +145,7 @@ export default function RichTextEditor({
           class: "max-w-full h-auto border-4 border-black shadow-[4px_4px_0_#000] my-4",
         },
       }),
+      Iframe,
     ],
     content: content || "",
     onUpdate: ({ editor }) => {
@@ -255,9 +257,9 @@ export default function RichTextEditor({
   };
 
   return (
-    <div className="border-4 border-black bg-white">
-      {/* Toolbar */}
-      <div className="border-b-4 border-black p-2 flex flex-wrap gap-1 bg-gray-50">
+    <div className="border-4 border-black bg-white flex flex-col max-h-[80vh]">
+      {/* Toolbar - Sticky */}
+      <div className="border-b-4 border-black p-2 flex flex-wrap gap-1 bg-gray-50 sticky top-0 z-10">
         {/* Bold */}
         <ToolbarButton
           onMouseDown={runCommand(() => editor.chain().focus().toggleBold().run())}
@@ -517,18 +519,21 @@ export default function RichTextEditor({
         <ToolbarButton
           onMouseDown={(e) => {
             e.preventDefault();
-            const url = window.prompt("Enter URL to embed (YouTube, CodePen, Spotify, etc.):");
-            if (url) {
-              // Insert as a special div that we'll render as an embed
-              editor
-                .chain()
-                .focus()
-                .insertContent(`<div data-embed-url="${url}" class="blog-embed"></div>`)
-                .run();
+            const input = window.prompt("Paste the embed code (iframe) from Spotify, YouTube, etc.:");
+            if (input) {
+              const trimmed = input.trim();
+
+              // Extract src from iframe if present
+              const srcMatch = trimmed.match(/src=["']([^"']+)["']/i);
+              const src = srcMatch ? srcMatch[1] : trimmed;
+
+              if (src) {
+                editor.chain().focus().setIframe({ src }).run();
+              }
             }
           }}
           active={false}
-          title="Embed (YouTube, CodePen, Spotify, etc.)"
+          title="Embed (Paste iframe code from Spotify, YouTube, etc.)"
         >
           📺
         </ToolbarButton>
@@ -561,8 +566,8 @@ export default function RichTextEditor({
         </ToolbarButton>
       </div>
 
-      {/* Editor Content */}
-      <div className="p-4 text-black" style={{ color: "#000000" }}>
+      {/* Editor Content - Scrollable */}
+      <div className="p-4 text-black flex-1 overflow-y-auto" style={{ color: "#000000" }}>
         <EditorContent editor={editor} />
       </div>
 

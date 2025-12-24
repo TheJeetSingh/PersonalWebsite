@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 
-const ReactPlayer = dynamic(() => import("react-player"), { 
+const ReactPlayer = dynamic(() => import("react-player"), {
   ssr: false,
 }) as React.ComponentType<{ url: string; width: string; height: string; style: React.CSSProperties; controls: boolean }>;
 
@@ -96,11 +96,34 @@ export default function Embed({ url, type }: EmbedProps) {
   }
 
   if (embedType === "spotify") {
-    // Convert Spotify URL to embed format
-    const spotifyId = url.match(/spotify\.com\/([^/]+)\/([^/?]+)/);
-    if (spotifyId) {
-      const type = spotifyId[1]; // track, album, playlist, etc.
-      const id = spotifyId[2];
+    // Check if it's already an embed URL (from pasting iframe code)
+    const embedUrlMatch = url.match(/spotify\.com\/embed\/([^/]+)\/([^/?&]+)/);
+    if (embedUrlMatch) {
+      const type = embedUrlMatch[1]; // track, album, playlist, etc.
+      console.log("Spotify embed URL - type:", type, "url:", url);
+      return (
+        <div className="my-6 border-4 border-black bg-black p-4">
+          <iframe
+            src={url}
+            width="100%"
+            height={type === "track" ? "152" : "352"}
+            frameBorder="0"
+            allow="encrypted-media; autoplay; clipboard-write; fullscreen; picture-in-picture"
+            className="border-2 border-black rounded-xl"
+            title="Spotify embed"
+            loading="lazy"
+          />
+        </div>
+      );
+    }
+
+    // Convert regular Spotify URL to embed format
+    // Handle both open.spotify.com and spotify.com URLs
+    const spotifyMatch = url.match(/spotify\.com\/([^/]+)\/([^/?&]+)/);
+    if (spotifyMatch) {
+      const type = spotifyMatch[1]; // track, album, playlist, etc.
+      const id = spotifyMatch[2];
+      console.log("Spotify embed - type:", type, "id:", id);
       return (
         <div className="my-6 border-4 border-black bg-black p-4">
           <iframe
@@ -108,11 +131,15 @@ export default function Embed({ url, type }: EmbedProps) {
             width="100%"
             height={type === "track" ? "152" : "352"}
             frameBorder="0"
-            allow="encrypted-media"
-            className="border-2 border-black"
+            allow="encrypted-media; autoplay; clipboard-write; fullscreen; picture-in-picture"
+            className="border-2 border-black rounded-xl"
+            title="Spotify embed"
+            loading="lazy"
           />
         </div>
       );
+    } else {
+      console.error("Failed to parse Spotify URL:", url);
     }
   }
 

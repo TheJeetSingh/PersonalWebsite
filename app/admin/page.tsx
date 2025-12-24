@@ -4,6 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import StarryBackground from "@/components/StarryBackground";
+import BlogContent from "@/components/BlogContent";
 import type { Attachment } from "@/lib/blog";
 import "./admin.css";
 
@@ -459,10 +460,7 @@ export default function AdminDashboard() {
                       )}
                     </div>
                     {/* Preview Content */}
-                    <div
-                      className="blog-content"
-                      dangerouslySetInnerHTML={{ __html: content || "<p>Start writing to see preview...</p>" }}
-                    />
+                    <BlogContent html={content || "<p>Start writing to see preview...</p>"} />
                   </div>
                 </div>
               ) : (
