@@ -2,10 +2,9 @@
 
 import dynamic from "next/dynamic";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ReactPlayer = dynamic(() => import("react-player"), { 
   ssr: false,
-}) as any;
+}) as React.ComponentType<{ url: string; width: string; height: string; style: React.CSSProperties; controls: boolean }>;
 
 interface EmbedProps {
   url: string;

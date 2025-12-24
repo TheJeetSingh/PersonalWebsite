@@ -107,7 +107,7 @@ export default function AdminDashboard() {
       console.error("Autosave error", err);
       setAutoSaveStatus("idle");
     }
-  }, [title, excerpt, content, category, readTime, editingPost, published]);
+  }, [title, excerpt, content, category, readTime, editingPost, published, attachments]);
 
   // Autosave effect
   useEffect(() => {
