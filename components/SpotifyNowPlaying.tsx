@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import "./SpotifyPlayPause.css";
 
 interface SpotifyTrack {
   name: string;
@@ -9,6 +10,8 @@ interface SpotifyTrack {
   image: string;
   url: string;
   isPlaying: boolean;
+  isLive?: boolean;
+  lastActiveAt?: string;
 }
 
 export default function SpotifyNowPlaying() {
@@ -28,7 +31,7 @@ export default function SpotifyNowPlaying() {
           if (data.name && data.artist) {
             setTrack(data);
           } else if (!data.isPlaying && !data.name) {
-            // Only clear track if there's truly nothing playing
+            // Only clear track if there's truly nothing playing and no cached data
             setTrack(null);
           }
         }
@@ -47,8 +50,17 @@ export default function SpotifyNowPlaying() {
 
   if (loading || !track) return null;
 
+  const isLive = track.isLive !== false; // default to true when field is missing
+  const label = isLive ? "Now Playing" : "Last listened to";
+  const timestampLabel =
+    !isLive && track.lastActiveAt
+      ? `Not current data, just last listened to song — stopped listening at ${new Date(
+          track.lastActiveAt
+        ).toLocaleString()}`
+      : null;
+
   return (
-    <div className="comic-panel bg-white p-4 max-w-md mx-auto border-4 border-black shadow-[4px_4px_0_#000]">
+    <div className="comic-panel bg-white p-4 max-w-lg mx-auto border-4 border-black shadow-[4px_4px_0_#000]">
       <div className="flex items-center gap-3">
         {track.image && (
           <img
@@ -58,10 +70,40 @@ export default function SpotifyNowPlaying() {
           />
         )}
         <div className="flex-1 min-w-0">
-          <p className="font-bouncy text-xs text-gray-600 uppercase mb-1">Now Playing</p>
+          <p className="font-bouncy text-xs text-gray-600 uppercase mb-1">{label}</p>
           <p className="font-luckiestGuy text-black text-sm truncate">{track.name}</p>
           <p className="font-dynaPuff text-xs text-gray-700 truncate">by {track.artist}</p>
+          {timestampLabel && (
+            <p className="font-dynaPuff text-[10px] text-red-600 mt-1">
+              {timestampLabel}
+            </p>
+          )}
         </div>
+        {/* Play/Pause indicator - only show when live (active) */}
+        {isLive && (
+          <div className="relative group" style={{ position: 'relative', left: '-14px' }}>
+            {/* Comic book speech bubble tooltip */}
+            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-[25px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10">
+              <div className="relative bg-white border-4 border-black rounded-lg px-5 py-2 shadow-[3px_3px_0_#000] whitespace-nowrap">
+                <p className="font-luckiestGuy text-sm text-black text-center leading-tight">
+                  Indicates if Jeet has<br />this song paused or playing
+                </p>
+                {/* Speech bubble tail */}
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[12px] border-t-black"></div>
+                <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-[1px] w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[10px] border-t-white"></div>
+              </div>
+            </div>
+            <div className="spotify-play-pause-container">
+              <input type="checkbox" checked={track.isPlaying} readOnly />
+              <svg className="play" viewBox="0 0 24 24" width="30" height="30">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              <svg className="pause" viewBox="0 0 24 24" width="30" height="30">
+                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
+              </svg>
+            </div>
+          </div>
+        )}
         {/* Spotify button with comic speech bubble tooltip */}
         <div className="relative group">
           {/* Comic book speech bubble tooltip */}
