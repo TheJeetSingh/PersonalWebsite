@@ -2,7 +2,10 @@
 
 import dynamic from "next/dynamic";
 
-const ReactPlayer = dynamic(() => import("react-player"), { ssr: false });
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const ReactPlayer = dynamic(() => import("react-player"), { 
+  ssr: false,
+}) as any;
 
 interface EmbedProps {
   url: string;
@@ -54,8 +57,8 @@ export default function Embed({ url, type }: EmbedProps) {
             url={url}
             width="100%"
             height="100%"
-            className="absolute top-0 left-0"
-            controls
+            style={{ position: "absolute", top: 0, left: 0 }}
+            controls={true}
           />
         </div>
       </div>
