@@ -25,6 +25,7 @@
     -webkit-mask-image: -webkit-radial-gradient(#000, #fff);
     padding: 0;
     text-transform: uppercase;
+    border: 2px solid #000;
 }
 
 .btn-17:disabled {
@@ -59,12 +60,13 @@
 
 .btn-17 .text-container {
     display: block;
-    mix-blend-mode: difference;
 }
 
 .btn-17 .text {
     display: block;
     position: relative;
+    color: #fff;
+    z-index: 1;
 }
 
 .btn-17:hover .text {
@@ -137,4 +139,13 @@
 
 .btn-17:hover:after {
     --progress: -102%;
+}
+
+.btn-17:hover {
+    color: #000;
+}
+
+.btn-17:hover .text {
+    color: #000;
+    z-index: 1;
 }

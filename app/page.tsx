@@ -1,58 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import HackerIntro from "@/components/HackerIntro";
 import RotatingText from "@/components/RotatingText";
 import ViewWorkButton from "@/components/ViewWorkButton";
 import ComicButton from "@/components/ComicButton";
 import StarryBackground from "@/components/StarryBackground";
+import SpotifyNowPlaying from "@/components/SpotifyNowPlaying";
 
 export default function Home() {
-  // State to control the visibility of the intro animation
-  // Default to true so it shows by default until we check localStorage
-  const [showIntro, setShowIntro] = useState(true);
-  // State to track if the user has seen the intro (used for main content transition)
-  const [hasSeenIntro, setHasSeenIntro] = useState(false);
-
-  useEffect(() => {
-    // Check if user has seen intro recently in this session
-    // Only check after component mounts to avoid hydration issues (window is not defined on server)
-    if (typeof window !== 'undefined') {
-      const lastIntroTime = localStorage.getItem("lastIntroTime");
-      const currentTime = Date.now();
-      const tenMinutes = 10 * 60 * 1000; // 10 minutes in milliseconds
-
-      if (lastIntroTime) {
-        const timeSinceLastIntro = currentTime - parseInt(lastIntroTime, 10);
-
-        // If less than 10 minutes have passed since the last intro, skip it
-        if (timeSinceLastIntro < tenMinutes) {
-          setShowIntro(false);
-          setHasSeenIntro(true);
-        }
-        // Otherwise, showIntro remains true (default) and animation plays
-      }
-      // If no lastIntroTime exists, showIntro remains true (default) and animation plays
-    }
-  }, []);
-
-  // Callback function when the intro animation is complete
-  const handleIntroComplete = () => {
-    setShowIntro(false);
-    setHasSeenIntro(true);
-    // Save the current timestamp to localStorage so we don't show it again for 10 minutes
-    localStorage.setItem("lastIntroTime", Date.now().toString());
-  };
-
   return (
-    <>
-      {/* Show the Hacker Intro animation if showIntro is true */}
-      {showIntro && <HackerIntro onComplete={handleIntroComplete} />}
-
-      {/* Main Content Area */}
-      {/* If intro is showing, hide main content with opacity-0. When intro finishes, fade in with opacity-100 */}
-      <div className={`relative z-10 min-h-screen ${showIntro ? "opacity-0" : "opacity-100 transition-opacity duration-500"}`}>
+    <div className="relative z-10 min-h-screen">
         <StarryBackground />
 
         {/* Hero Section */}
@@ -75,7 +32,7 @@ export default function Home() {
                 />
               </h1>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-8">
                 <ViewWorkButton href="/projects">
                   View My Work
                 </ViewWorkButton>
@@ -83,12 +40,15 @@ export default function Home() {
                   Read My Blog
                 </ComicButton>
               </div>
+
+              {/* Spotify Now Playing */}
+              <div className="mt-8">
+                <SpotifyNowPlaying />
+              </div>
             </div>
           </div>
         </section>
-
-      </div>
-    </>
+    </div>
   );
 }
 

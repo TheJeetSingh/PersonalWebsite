@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import StarryBackground from "@/components/StarryBackground";
 import { getPostBySlug } from "@/lib/blog";
+import BlogContent from "@/components/BlogContent";
 import "../blog.css";
 import "./post.css";
 
@@ -96,11 +97,8 @@ export default async function BlogPost({
             )}
           </div>
 
-          {/* Content - renders HTML from TipTap editor */}
-          <div
-            className="blog-content"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
+          {/* Content - renders HTML from TipTap editor with embeds */}
+          <BlogContent html={post.content} />
 
           {/* Attachments Section */}
           {post.attachments && post.attachments.length > 0 && (

@@ -513,6 +513,25 @@ export default function RichTextEditor({
         >
           🖼️
         </ToolbarButton>
+        {/* Embed Button */}
+        <ToolbarButton
+          onMouseDown={(e) => {
+            e.preventDefault();
+            const url = window.prompt("Enter URL to embed (YouTube, CodePen, Spotify, etc.):");
+            if (url) {
+              // Insert as a special div that we'll render as an embed
+              editor
+                .chain()
+                .focus()
+                .insertContent(`<div data-embed-url="${url}" class="blog-embed"></div>`)
+                .run();
+            }
+          }}
+          active={false}
+          title="Embed (YouTube, CodePen, Spotify, etc.)"
+        >
+          📺
+        </ToolbarButton>
 
         <div className="w-px bg-black mx-1" />
 
